@@ -4,6 +4,9 @@ import entities.Agenda;
 import entities.Contato;
 import exception.DomainException;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -51,7 +54,7 @@ public class Program {
                             sc.nextLine();
 
                             // Tentativa de criar um novo contato
-                            Contato contato = new Contato(nome, numero, LocalDate.now());
+                            Contato contato = new Contato(nome, numero);
                             agenda.adicionarContato(contato);
                             numeroValido = true; // Sai do loop se não houver exceção
 
@@ -91,18 +94,47 @@ public class Program {
                         if(opt2 == 2)
                             alterarContato(contatoEncontrado);
                         if(opt2 == 3)
-                            contatoEncontrado.bloquearContato();
+                            contatoEncontrado.blockUnblockContato();
                         if(opt2 == 4)
                             break;
-
-
                     }
                     break;
+
+                //alterar a forma de validação para (Boolean) que apenas ignore Contatos já salvos e não interrompa o fluxo de leitura do arquivo.
+                case 4:
+                    System.out.println("Digite o caminho do arquivo: ");
+                    String strpath = sc.next();
+
+                    try(BufferedReader br = new BufferedReader(new FileReader(strpath))){
+                        String line = br.readLine();
+                        while(line != null){
+                            String[] l = line.split(",");
+                            if(l.length < 3) {
+                                agenda.adicionarContato(new Contato(l[0], Integer.parseInt(l[1])));
+                            }
+                            else if(l.length == 3 && !l[2].isEmpty()){
+                                Contato contato = new Contato(l[0], Integer.parseInt(l[1]), LocalDate.parse(l[2],fmt));
+                            }
+                            line = br.readLine();
+                        }
+                    }
+                    catch(IOException e){
+                        System.out.println("Erro: " + e.getMessage());
+                    } catch (DomainException e) {
+                        System.out.println("Erro: " + e.getMessage() + " Tente novamente.");
+                    } catch (Exception e) {
+                        System.out.println("Entrada inválida! Verifique se o arquivo tem a formatação csv.\n" + e.getMessage());
+                        sc.nextLine();
+                    }
             }
 
         }while(opt != 6);
         sc.close();
     }
+
+    //Criar metodo adicionar contato ?
+
+    //Delegar metodo de alteração para Agenda
     public static void alterarContato(Contato contatoEncontrado){
         Scanner sc = new Scanner(System.in);
         System.out.println("         Edição de Contato       ");
@@ -124,6 +156,7 @@ public class Program {
             case 2:
                 System.out.print("\nNovo Numero: ");
                 Integer NewNumber = sc.nextInt();
+                sc.nextLine();
                 contatoEncontrado.setNumero(NewNumber);
                 System.out.println("Numero alterado com sucesso!");
                 break;
@@ -134,6 +167,7 @@ public class Program {
                 contatoEncontrado.setNome(NewName);
                 System.out.print("\nNovo Numero: ");
                 NewNumber = sc.nextInt();
+                sc.nextLine();
                 contatoEncontrado.setNumero(NewNumber);
                 System.out.println("Dados alterados com sucesso!");
                 break;

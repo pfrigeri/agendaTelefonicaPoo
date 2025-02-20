@@ -16,6 +16,17 @@ public class Contato implements Comparable<Contato> { //Permite a comparação d
     public Contato() {
     }
 
+    public Contato(String nome, Integer numero) throws DomainException {
+        this.nome = nome;
+        if(numero < 100000000 || numero > 999999999){
+            throw new DomainException("O Número de telefone deve possuir 9 digitos.");
+        }
+        this.numero = numero;
+        this.dataCriacao = LocalDate.now();
+        this.status = Status.PERMITIDO;
+
+    }
+
     public Contato(String nome, Integer numero, LocalDate dataCriacao) throws DomainException {
         this.nome = nome;
         if(numero < 100000000 || numero > 999999999){
@@ -60,8 +71,14 @@ public class Contato implements Comparable<Contato> { //Permite a comparação d
         return this.nome.compareToIgnoreCase(outro.getNome());
     }
 
-    public void bloquearContato(){
-        this.status = Status.BLOQUEADO;
+    //Mudança para que este metodo sirva para bloquear e desbloquear
+    public void blockUnblockContato(){
+        if(this.status == Status.PERMITIDO) {
+            this.status = Status.BLOQUEADO;
+        }
+        else{
+            this.status = Status.PERMITIDO;
+        }
     }
 
 
