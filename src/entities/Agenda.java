@@ -1,5 +1,8 @@
 package entities;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +42,23 @@ public class Agenda {
                 System.out.println("==================================\n");
                 System.out.println(c + "\n");
             }
+        }
+    }
+
+    public void salvarContatos(String path){
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(path + "\\contatosAgenda.txt"))){
+
+            for(Contato c : contatos){
+                bw.write(c.getNome()+","+c.getNumero());
+                bw.newLine();
+            }
+        }
+        catch(IOException e){
+            System.out.println("Erro: " + e.getMessage());
+        }
+        catch (Exception e) {
+            System.out.println("Entrada inválida! Verifique se o arquivo tem a formatação csv.\n" + e.getMessage());
         }
     }
 

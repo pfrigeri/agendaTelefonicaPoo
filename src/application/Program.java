@@ -4,9 +4,7 @@ import entities.Agenda;
 import entities.Contato;
 import exception.DomainException;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -126,6 +124,13 @@ public class Program {
                         System.out.println("Entrada inválida! Verifique se o arquivo tem a formatação csv.\n" + e.getMessage());
                         sc.nextLine();
                     }
+
+                case 5:
+                    System.out.println("Digite o caminho do arquivo: ");
+                    strpath = sc.next();
+
+                    agenda.salvarContatos(strpath);
+                    break;
             }
 
         }while(opt != 6);
