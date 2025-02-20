@@ -26,6 +26,7 @@ public class Agenda {
         Collections.sort(contatos);
     }
 
+
     public void exibirContatos(){
         if(contatos.isEmpty()){
             System.out.println();
@@ -47,14 +48,15 @@ public class Agenda {
             int meio = (comeco + fim) / 2;
             Contato chute = contatos.get(meio);
 
-            int comparacao = chute.getNome().compareTo(nomeBusca);
+
+            int comparacao = chute.getNome().substring(0,nomeBusca.length()).compareTo(nomeBusca);
 
             if (comparacao == 0) {
                 return chute;
             } else if (comparacao > 0) {
-                fim = meio - 1;  // Continua procurando na metade esquerda
+                fim = meio - 1;
             } else {
-                comeco = meio + 1; // Continua procurando na metade direita
+                comeco = meio + 1;
             }
         }
         return null; // Retorna null se não encontrar o contato

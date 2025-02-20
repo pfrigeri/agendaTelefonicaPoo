@@ -28,6 +28,8 @@ public class Program {
             System.out.println("1. Adicionar Contato.");
             System.out.println("2. Exibir Contatos.");
             System.out.println("3. Buscar Contato.");
+            System.out.println("4. Importar Contatos.");
+            System.out.println("5. Salvar Agenda.");
             System.out.println("6. Sair.");
             System.out.print("\nEscolha uma opção: ");
             opt = sc.nextInt();
@@ -46,7 +48,7 @@ public class Program {
                         try {
                             System.out.print("Número (xxxxx-xxxx): ");
                             numero = sc.nextInt();
-                            sc.nextLine(); // Consumir a quebra de linha
+                            sc.nextLine();
 
                             // Tentativa de criar um novo contato
                             Contato contato = new Contato(nome, numero, LocalDate.now());
@@ -57,7 +59,7 @@ public class Program {
                             System.out.println("Erro: " + e.getMessage() + " Tente novamente.");
                         } catch (Exception e) {
                             System.out.println("Entrada inválida! Certifique-se de inserir um número correto.");
-                            sc.nextLine(); // Limpar buffer
+                            sc.nextLine();
                         }
                     }
                 break;
@@ -109,28 +111,34 @@ public class Program {
         System.out.println("3. Alterar Ambos.");
         System.out.print("Opção: ");
         int opt = sc.nextInt();
-        if(opt == 1) {
-            System.out.print("Novo Nome: ");
-            String NewName = sc.nextLine();
-            contatoEncontrado.setNome(NewName);
+        sc.nextLine();
+
+        switch(opt) {
+            case 1:
+                System.out.print("\nNovo Nome: ");
+                String NewName = sc.nextLine();
+                contatoEncontrado.setNome(NewName);
+                System.out.println("Nome alterado com sucesso!");
+                break;
+
+            case 2:
+                System.out.print("\nNovo Numero: ");
+                Integer NewNumber = sc.nextInt();
+                contatoEncontrado.setNumero(NewNumber);
+                System.out.println("Numero alterado com sucesso!");
+                break;
+
+            case 3:
+                System.out.print("\nNovo Nome: ");
+                NewName = sc.nextLine();
+                contatoEncontrado.setNome(NewName);
+                System.out.print("\nNovo Numero: ");
+                NewNumber = sc.nextInt();
+                contatoEncontrado.setNumero(NewNumber);
+                System.out.println("Dados alterados com sucesso!");
+                break;
+
         }
-        if(opt == 2) {
-            System.out.print("Novo Numero: ");
-            Integer NewNumber = sc.nextInt();
-            contatoEncontrado.setNumero(NewNumber);
-        }
-        if (opt == 3) {
-            System.out.print("Novo Nome: ");
-            String NewName = sc.nextLine();
-            contatoEncontrado.setNome(NewName);
-            System.out.print("Novo Numero: ");
-            Integer NewNumber = sc.nextInt();
-            contatoEncontrado.setNumero(NewNumber);
-        }
-        else{
-            System.out.println("Entrada inválida.");
-        }
-        sc.close();
     }
 
 }
