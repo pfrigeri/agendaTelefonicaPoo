@@ -45,7 +45,7 @@ public class Agenda {
         }
     }
 
-    public void salvarContatos(String path){
+    public void salvarContatos(String path) throws Exception {
 
         try(BufferedWriter bw = new BufferedWriter(new FileWriter(path + "\\contatosAgenda.txt"))){
 
@@ -62,24 +62,41 @@ public class Agenda {
         }
     }
 
-    public Contato buscarContatos(String nomeBusca){
+    public List<Contato> buscarContatos(String nomeBusca){
         int comeco = 0, fim = contatos.size() -1;
+
+        List<Contato> resultados = new ArrayList<>();
+
         while(comeco <= fim){
             int meio = (comeco + fim) / 2;
             Contato chute = contatos.get(meio);
 
 
-            int comparacao = chute.getNome().substring(0,nomeBusca.length()).compareTo(nomeBusca);
+            //Verificar se há mais algum contato com o parametro da bsuca (ex: 'ana')
+            int comparacao = chute.getNome().substring(0,nomeBusca.length()).compareToIgnoreCase(nomeBusca);
 
             if (comparacao == 0) {
-                return chute;
+                int esquerda = meio -1, direita = meio +1;
+                resultados.add(chute);
+
+                while(esquerda >= 0 && contatos.get(esquerda).getNome().startsWith(nomeBusca)){
+                    resultados.add(contatos.get(esquerda));
+                    esquerda--;
+                }
+
+                while(direita <= fim && contatos.get(direita).getNome().startsWith(nomeBusca)){
+                    resultados.add(contatos.get(direita));
+                    direita++;
+                }
+                return resultados;
+
             } else if (comparacao > 0) {
                 fim = meio - 1;
             } else {
                 comeco = meio + 1;
             }
         }
-        return null; // Retorna null se não encontrar o contato
+        return new ArrayList<>(); // Retorna null se não encontrar o contato
     }
 
     public void validarNumeroUnico(Integer numeroNovo) throws DomainException {

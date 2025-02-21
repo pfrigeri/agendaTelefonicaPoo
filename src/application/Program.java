@@ -7,6 +7,7 @@ import exception.DomainException;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 public class Program {
@@ -70,16 +71,19 @@ public class Program {
                     break;
 
                 case 3:
-                    System.out.println("Nome do contato desejado: ");
+                    System.out.print("Nome do contato desejado: ");
                     String nomeBusca = sc.nextLine();
 
-                    Contato contatoEncontrado = agenda.buscarContatos(nomeBusca);
+                    //Se Houver mais de um nome com o mesmo parâmetro da Busca Mostrar todos os contatos com este parametro
+                    List<Contato> contatoEncontrado = agenda.buscarContatos(nomeBusca);
 
-                    if (contatoEncontrado == null) {
+
+                    if (contatoEncontrado.isEmpty()) {
                         System.out.println("Contato não encontrado.");
-                    } else {
-                        System.out.println("Contato encontrado: " + contatoEncontrado);
-                        System.out.println("         Opções:                  ");
+                    }
+                    else if(contatoEncontrado.size() == 1){
+                        System.out.println("Contato encontrado: \n" + contatoEncontrado);
+                        System.out.println("\n         Opções:                  ");
                         System.out.println("1. Excluir contato.");
                         System.out.println("2. Alterar contato.");
                         System.out.println("3. Bloquear Contato.");
@@ -88,19 +92,25 @@ public class Program {
                         int opt2 = sc.nextInt();
                         sc.nextLine();
                         if(opt2 == 1)
-                            agenda.removerContato(contatoEncontrado);
+                            agenda.removerContato(contatoEncontrado.get(0));
                         if(opt2 == 2)
-                            alterarContato(contatoEncontrado);
+                            alterarContato(contatoEncontrado.get(0));
                         if(opt2 == 3)
-                            contatoEncontrado.blockUnblockContato();
+                            contatoEncontrado.get(0).blockUnblockContato();
                         if(opt2 == 4)
                             break;
+                    }
+                    else{
+                        System.out.println("Foram Encontrados mais de um contato com este nome:\n");
+                        for(Contato c : contatoEncontrado){
+                            System.out.println(c.getNome());
+                        }
                     }
                     break;
 
                 //alterar a forma de validação para (Boolean) que apenas ignore Contatos já salvos e não interrompa o fluxo de leitura do arquivo.
                 case 4:
-                    System.out.println("Digite o caminho do arquivo: ");
+                    System.out.print("Digite o caminho do arquivo: ");
                     String strpath = sc.next();
 
                     try(BufferedReader br = new BufferedReader(new FileReader(strpath))){
@@ -115,6 +125,7 @@ public class Program {
                             }
                             line = br.readLine();
                         }
+                        break;
                     }
                     catch(IOException e){
                         System.out.println("Erro: " + e.getMessage());
