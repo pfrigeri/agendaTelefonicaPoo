@@ -16,12 +16,8 @@ public class Program {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         Agenda agenda = new Agenda();
 
-
-        //Criar um menu de opções com switch case (feito)
-        //Verificar numeros de telefone duplicados (feito)
-        //Fazer um metodo de busca que devolva todos os contatos com o nome digitado(Ex: Todos os contatos "ana")
-        //Importar contatos de arquivo e salvar contatos em arquivo
-
+        //Arquitetar um metodo de adição que permita que o código seja reutilizavel, evitando repetição no case 3.
+        //Alterar a forma de validação para (Boolean) que apenas ignore Contatos já salvos e não interrompa o fluxo de leitura do arquivo.
 
         System.out.println("================= AGENDA TELEFÔNICA POO =================");
         int opt;
@@ -52,15 +48,14 @@ public class Program {
                             numero = sc.nextInt();
                             sc.nextLine();
 
-                            // Tentativa de criar um novo contato
                             Contato contato = new Contato(nome, numero);
                             agenda.adicionarContato(contato);
                             numeroValido = true; // Sai do loop se não houver exceção
 
                         } catch (DomainException e) {
-                            System.out.println("Erro: " + e.getMessage() + " Tente novamente.");
+                            System.out.println("\nErro: " + e.getMessage() + " Tente novamente.\n");
                         } catch (Exception e) {
-                            System.out.println("Entrada inválida! Certifique-se de inserir um número correto.");
+                            System.out.println("\nEntrada inválida! Certifique-se de inserir um número correto.\n");
                             sc.nextLine();
                         }
                     }
@@ -71,41 +66,56 @@ public class Program {
                     break;
 
                 case 3:
+                    System.out.println("\n            Tipo de Busca:          \n");
+                    System.out.println("1.Busca Genética.");
+                    System.out.println("2.Busca Específica.");
+                    System.out.print("Opção: ");
+                    int opt3 = sc.nextInt();
+                    sc.nextLine();
+
                     System.out.print("Nome do contato desejado: ");
                     String nomeBusca = sc.nextLine();
 
-                    //Se Houver mais de um nome com o mesmo parâmetro da Busca Mostrar todos os contatos com este parametro
-                    List<Contato> contatoEncontrado = agenda.buscarContatos(nomeBusca);
+                    if(opt3 == 1) {
+                        List<Contato> contatoEncontrado = agenda.buscaGenerica(nomeBusca);
 
+                        if(contatoEncontrado.isEmpty())
+                            System.out.println("Contato não encontrado.\n");
+                        else{
+                            System.out.printf("\nContatos encontrados com este nome (%d):\n\n", contatoEncontrado.size());
+                            for(Contato c : contatoEncontrado){
+                                System.out.println(c.getNome());
+                            }
+                            System.out.println();
+                        }
 
-                    if (contatoEncontrado.isEmpty()) {
-                        System.out.println("Contato não encontrado.");
                     }
-                    else if(contatoEncontrado.size() == 1){
-                        System.out.println("Contato encontrado: \n" + contatoEncontrado);
-                        System.out.println("\n         Opções:                  ");
-                        System.out.println("1. Excluir contato.");
-                        System.out.println("2. Alterar contato.");
-                        System.out.println("3. Bloquear Contato.");
-                        System.out.println("4. Sair");
-                        System.out.print("Opção: ");
-                        int opt2 = sc.nextInt();
-                        sc.nextLine();
-                        if(opt2 == 1)
-                            agenda.removerContato(contatoEncontrado.get(0));
-                        if(opt2 == 2)
-                            alterarContato(contatoEncontrado.get(0));
-                        if(opt2 == 3)
-                            contatoEncontrado.get(0).blockUnblockContato();
-                        if(opt2 == 4)
-                            break;
-                    }
-                    else{
-                        System.out.println("Foram Encontrados mais de um contato com este nome:\n");
-                        for(Contato c : contatoEncontrado){
-                            System.out.println(c.getNome());
+
+                    if(opt3 == 2) {
+                        Contato contatoEncontrado = agenda.buscaEspecifica(nomeBusca);
+                        if (contatoEncontrado == null)
+                            System.out.println("Contato não encontrado.");
+                        else{
+                            System.out.println("Contato encontrado: \n" + contatoEncontrado);
+                            System.out.println("\n         Opções:                  ");
+                            System.out.println("1. Excluir contato.");
+                            System.out.println("2. Alterar contato.");
+                            System.out.println("3. Bloquear Contato.");
+                            System.out.println("4. Sair");
+                            System.out.print("Opção: ");
+                            int opt2 = sc.nextInt();
+                            sc.nextLine();
+                            if (opt2 == 1)
+                                agenda.removerContato(contatoEncontrado);
+                            if (opt2 == 2)
+                                alterarContato(contatoEncontrado);
+                            if (opt2 == 3)
+                                contatoEncontrado.blockUnblockContato();
+                            if (opt2 == 4)
+                                break;
                         }
                     }
+
                     break;
 
                 //alterar a forma de validação para (Boolean) que apenas ignore Contatos já salvos e não interrompa o fluxo de leitura do arquivo.
@@ -128,16 +138,16 @@ public class Program {
                         break;
                     }
                     catch(IOException e){
-                        System.out.println("Erro: " + e.getMessage());
+                        System.out.println("\nErro: " + e.getMessage()+"\n");
                     } catch (DomainException e) {
-                        System.out.println("Erro: " + e.getMessage() + " Tente novamente.");
+                        System.out.println("\nErro: " + e.getMessage() + " Tente novamente.\n");
                     } catch (Exception e) {
-                        System.out.println("Entrada inválida! Verifique se o arquivo tem a formatação csv.\n" + e.getMessage());
+                        System.out.println("\nEntrada inválida! Verifique se o arquivo tem a formatação csv.\n" + e.getMessage());
                         sc.nextLine();
                     }
 
                 case 5:
-                    System.out.println("Digite o caminho do arquivo: ");
+                    System.out.print("\nDigite o caminho do arquivo: ");
                     strpath = sc.next();
 
                     agenda.salvarContatos(strpath);
@@ -149,8 +159,6 @@ public class Program {
     }
 
     //Criar metodo adicionar contato ?
-
-    //Delegar metodo de alteração para Agenda
     public static void alterarContato(Contato contatoEncontrado){
         Scanner sc = new Scanner(System.in);
         System.out.println("         Edição de Contato       ");

@@ -62,41 +62,34 @@ public class Agenda {
         }
     }
 
-    public List<Contato> buscarContatos(String nomeBusca){
-        int comeco = 0, fim = contatos.size() -1;
-
+    public List<Contato> buscaGenerica(String nomeBusca){
         List<Contato> resultados = new ArrayList<>();
 
+        for (Contato contato : contatos) {
+            if (contato.getNome().toLowerCase().startsWith(nomeBusca.toLowerCase())) {
+                resultados.add(contato);
+            }
+        }
+        return resultados;
+    }
+
+    public Contato buscaEspecifica(String nomeBusca){
+        int comeco = 0, fim = contatos.size() -1;
         while(comeco <= fim){
             int meio = (comeco + fim) / 2;
             Contato chute = contatos.get(meio);
 
-
-            //Verificar se há mais algum contato com o parametro da bsuca (ex: 'ana')
             int comparacao = chute.getNome().substring(0,nomeBusca.length()).compareToIgnoreCase(nomeBusca);
 
             if (comparacao == 0) {
-                int esquerda = meio -1, direita = meio +1;
-                resultados.add(chute);
-
-                while(esquerda >= 0 && contatos.get(esquerda).getNome().startsWith(nomeBusca)){
-                    resultados.add(contatos.get(esquerda));
-                    esquerda--;
-                }
-
-                while(direita <= fim && contatos.get(direita).getNome().startsWith(nomeBusca)){
-                    resultados.add(contatos.get(direita));
-                    direita++;
-                }
-                return resultados;
-
+                return chute;
             } else if (comparacao > 0) {
                 fim = meio - 1;
             } else {
                 comeco = meio + 1;
             }
         }
-        return new ArrayList<>(); // Retorna null se não encontrar o contato
+        return null;
     }
 
     public void validarNumeroUnico(Integer numeroNovo) throws DomainException {
